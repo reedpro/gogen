@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: gogen-db
+    restart: always
+    environment:
+      POSTGRES_USER: gogen
+      POSTGRES_PASSWORD: gogen_secure_password_dev
+      POSTGRES_DB: gogen
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: gogen-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gogen.local
+      PGADMIN_DEFAULT_PASSWORD: pgadmin_dev_password
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gogen-ollama
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  postgres_data:
+  ollama_data:
